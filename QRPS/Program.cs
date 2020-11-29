@@ -1,7 +1,7 @@
-﻿using System;
+﻿using QRPS.CommonLibrary.Utility;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 
 namespace QRPS
@@ -9,14 +9,25 @@ namespace QRPS
     static class Program
     {
         /// <summary>
+        /// ログクラス
+        /// </summary>
+        private static Log _Log = new Log();
+
+        /// <summary>
         /// アプリケーションのメイン エントリ ポイントです。
         /// </summary>
         [STAThread]
         static void Main()
         {
+            _Log.WriteDebugLog("MainMenu起動");
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+
+            // システム情報を取得する
+            new Functions().GetSystemInfo();
+            
+            // Form起動
+            Application.Run(new FileListForm());
         }
     }
 }
