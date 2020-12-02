@@ -42,7 +42,7 @@ namespace QRPS.CommonLibrary.Utility
         public enum SystemKey
         {
             PptxFldr,
-            USBCOMConneftionInfo,
+            USBCOMName,
             targetFileExtend
         }
 

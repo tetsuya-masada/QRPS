@@ -28,12 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.dgvFileNameList = new System.Windows.Forms.DataGridView();
-            this.lblInfo = new System.Windows.Forms.Label();
-            this.btnReload = new System.Windows.Forms.Button();
             this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.filePath = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lblInfo = new System.Windows.Forms.Label();
+            this.btnReload = new System.Windows.Forms.Button();
             this.btnStop = new System.Windows.Forms.Button();
+            this.btnConnect = new System.Windows.Forms.Button();
+            this.cbPort = new System.Windows.Forms.ComboBox();
+            this.serialPort1 = new System.IO.Ports.SerialPort(this.components);
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.btnDisConnect = new System.Windows.Forms.Button();
+            this.lblConInf = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFileNameList)).BeginInit();
             this.SuspendLayout();
             // 
@@ -46,32 +53,13 @@
             this.dgvFileNameList.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.FileName,
             this.filePath});
-            this.dgvFileNameList.Location = new System.Drawing.Point(29, 69);
+            this.dgvFileNameList.Location = new System.Drawing.Point(35, 69);
             this.dgvFileNameList.Name = "dgvFileNameList";
             this.dgvFileNameList.ReadOnly = true;
             this.dgvFileNameList.RowTemplate.Height = 21;
             this.dgvFileNameList.Size = new System.Drawing.Size(244, 301);
             this.dgvFileNameList.TabIndex = 0;
-            // 
-            // lblInfo
-            // 
-            this.lblInfo.AutoSize = true;
-            this.lblInfo.Font = new System.Drawing.Font("MS UI Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-            this.lblInfo.Location = new System.Drawing.Point(32, 17);
-            this.lblInfo.Name = "lblInfo";
-            this.lblInfo.Size = new System.Drawing.Size(74, 15);
-            this.lblInfo.TabIndex = 1;
-            this.lblInfo.Text = "Infomation";
-            // 
-            // btnReload
-            // 
-            this.btnReload.Location = new System.Drawing.Point(34, 400);
-            this.btnReload.Name = "btnReload";
-            this.btnReload.Size = new System.Drawing.Size(126, 38);
-            this.btnReload.TabIndex = 2;
-            this.btnReload.Text = "再読み込み";
-            this.btnReload.UseVisualStyleBackColor = true;
-            this.btnReload.Click += new System.EventHandler(this.btnReload_Click);
+            this.dgvFileNameList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvFileNameList_CellClick);
             // 
             // FileName
             // 
@@ -87,9 +75,29 @@
             this.filePath.ReadOnly = true;
             this.filePath.Visible = false;
             // 
+            // lblInfo
+            // 
+            this.lblInfo.AutoSize = true;
+            this.lblInfo.Font = new System.Drawing.Font("MS UI Gothic", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.lblInfo.Location = new System.Drawing.Point(32, 17);
+            this.lblInfo.Name = "lblInfo";
+            this.lblInfo.Size = new System.Drawing.Size(74, 15);
+            this.lblInfo.TabIndex = 1;
+            this.lblInfo.Text = "Infomation";
+            // 
+            // btnReload
+            // 
+            this.btnReload.Location = new System.Drawing.Point(12, 400);
+            this.btnReload.Name = "btnReload";
+            this.btnReload.Size = new System.Drawing.Size(126, 38);
+            this.btnReload.TabIndex = 2;
+            this.btnReload.Text = "再読み込み";
+            this.btnReload.UseVisualStyleBackColor = true;
+            this.btnReload.Click += new System.EventHandler(this.btnReload_Click);
+            // 
             // btnStop
             // 
-            this.btnStop.Location = new System.Drawing.Point(323, 401);
+            this.btnStop.Location = new System.Drawing.Point(222, 402);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(106, 36);
             this.btnStop.TabIndex = 3;
@@ -97,11 +105,65 @@
             this.btnStop.UseVisualStyleBackColor = true;
             this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
+            // btnConnect
+            // 
+            this.btnConnect.Location = new System.Drawing.Point(345, 79);
+            this.btnConnect.Name = "btnConnect";
+            this.btnConnect.Size = new System.Drawing.Size(154, 50);
+            this.btnConnect.TabIndex = 4;
+            this.btnConnect.Text = "COM Connection";
+            this.btnConnect.UseVisualStyleBackColor = true;
+            this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+            // 
+            // cbPort
+            // 
+            this.cbPort.FormattingEnabled = true;
+            this.cbPort.Location = new System.Drawing.Point(345, 53);
+            this.cbPort.Name = "cbPort";
+            this.cbPort.Size = new System.Drawing.Size(221, 20);
+            this.cbPort.TabIndex = 5;
+            // 
+            // serialPort1
+            // 
+            this.serialPort1.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort1_DataReceived);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(345, 231);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(173, 19);
+            this.textBox1.TabIndex = 6;
+            // 
+            // btnDisConnect
+            // 
+            this.btnDisConnect.Location = new System.Drawing.Point(515, 79);
+            this.btnDisConnect.Name = "btnDisConnect";
+            this.btnDisConnect.Size = new System.Drawing.Size(154, 50);
+            this.btnDisConnect.TabIndex = 4;
+            this.btnDisConnect.Text = "COM DisConnection";
+            this.btnDisConnect.UseVisualStyleBackColor = true;
+            this.btnDisConnect.Click += new System.EventHandler(this.btnDisConnect_Click);
+            // 
+            // lblConInf
+            // 
+            this.lblConInf.AutoSize = true;
+            this.lblConInf.Font = new System.Drawing.Font("MS UI Gothic", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.lblConInf.Location = new System.Drawing.Point(32, 373);
+            this.lblConInf.Name = "lblConInf";
+            this.lblConInf.Size = new System.Drawing.Size(94, 14);
+            this.lblConInf.TabIndex = 7;
+            this.lblConInf.Text = "ConnectionInfo";
+            // 
             // FileListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(444, 450);
+            this.ClientSize = new System.Drawing.Size(747, 450);
+            this.Controls.Add(this.lblConInf);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.cbPort);
+            this.Controls.Add(this.btnDisConnect);
+            this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.btnReload);
             this.Controls.Add(this.lblInfo);
@@ -124,6 +186,12 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn FileName;
         private System.Windows.Forms.DataGridViewTextBoxColumn filePath;
         private System.Windows.Forms.Button btnStop;
+        private System.Windows.Forms.Button btnConnect;
+        private System.Windows.Forms.ComboBox cbPort;
+        private System.IO.Ports.SerialPort serialPort1;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button btnDisConnect;
+        private System.Windows.Forms.Label lblConInf;
     }
 }
 
