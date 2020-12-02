@@ -41,6 +41,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.btnDisConnect = new System.Windows.Forms.Button();
             this.lblConInf = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvFileNameList)).BeginInit();
             this.SuspendLayout();
             // 
@@ -107,7 +108,7 @@
             // 
             // btnConnect
             // 
-            this.btnConnect.Location = new System.Drawing.Point(345, 79);
+            this.btnConnect.Location = new System.Drawing.Point(398, 91);
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.Size = new System.Drawing.Size(154, 50);
             this.btnConnect.TabIndex = 4;
@@ -118,7 +119,7 @@
             // cbPort
             // 
             this.cbPort.FormattingEnabled = true;
-            this.cbPort.Location = new System.Drawing.Point(345, 53);
+            this.cbPort.Location = new System.Drawing.Point(398, 65);
             this.cbPort.Name = "cbPort";
             this.cbPort.Size = new System.Drawing.Size(221, 20);
             this.cbPort.TabIndex = 5;
@@ -129,14 +130,14 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(345, 231);
+            this.textBox1.Location = new System.Drawing.Point(398, 243);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(173, 19);
             this.textBox1.TabIndex = 6;
             // 
             // btnDisConnect
             // 
-            this.btnDisConnect.Location = new System.Drawing.Point(515, 79);
+            this.btnDisConnect.Location = new System.Drawing.Point(398, 147);
             this.btnDisConnect.Name = "btnDisConnect";
             this.btnDisConnect.Size = new System.Drawing.Size(154, 50);
             this.btnDisConnect.TabIndex = 4;
@@ -154,11 +155,21 @@
             this.lblConInf.TabIndex = 7;
             this.lblConInf.Text = "ConnectionInfo";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(396, 38);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(49, 12);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Debug用";
+            // 
             // FileListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(747, 450);
+            this.ClientSize = new System.Drawing.Size(646, 450);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.lblConInf);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.cbPort);
@@ -192,6 +203,7 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button btnDisConnect;
         private System.Windows.Forms.Label lblConInf;
+        private System.Windows.Forms.Label label1;
     }
 }
 

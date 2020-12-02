@@ -40,7 +40,8 @@ namespace QRPS
             // 指定COMポート接続
             ComConnection(Config.GetIniFileString(Config.Section.System.ToString(), Config.SystemKey.USBCOMName.ToString()));
 
-            // USBシリアル用 COMポート取得
+            // USBシリアル COMポート一覧取得
+            // Debug用
             string[] ports = SerialPort.GetPortNames();
             foreach (string port in ports) { cbPort.Items.Add(port); }
             if (cbPort.Items.Count > 0)
@@ -71,7 +72,7 @@ namespace QRPS
         {
             // アプリケーションを終了します。
             DialogResult res = MessageBox.Show(string.Format(CommonLibrary.Utility.Message.GetMessage("I_0002")),
-                                                    "質問",
+                                                    "Warning",
                                                     MessageBoxButtons.OKCancel,
                                                     MessageBoxIcon.Exclamation);
             if (res == DialogResult.Cancel)
@@ -165,6 +166,11 @@ namespace QRPS
                 _Log.WriteErrorLog(string.Format(CommonLibrary.Utility.Message.GetMessage("E_0003")));
                 lblConInf.Text = string.Format(CommonLibrary.Utility.Message.GetMessage("E_0003"));
                 lblConInf.ForeColor = Color.Red;
+                MessageBox.Show(string.Format(CommonLibrary.Utility.Message.GetMessage("E_0003")),
+                                                    "Warning",
+                                                    MessageBoxButtons.OK,
+                                                    MessageBoxIcon.Exclamation);
+                this.Close();
             }
             else
             {
@@ -190,17 +196,18 @@ namespace QRPS
                     _Log.WriteErrorLog(string.Format(CommonLibrary.Utility.Message.GetMessage("E_0004"), comName));
                     lblConInf.Text = string.Format(CommonLibrary.Utility.Message.GetMessage("E_0004"), comName);
                     lblConInf.ForeColor = Color.Red;
+                    MessageBox.Show(string.Format(CommonLibrary.Utility.Message.GetMessage("E_0004"), comName),
+                                                    "Warning",
+                                                    MessageBoxButtons.OK,
+                                                    MessageBoxIcon.Exclamation);
+                    this.Close();
                 }
             }
         }
 
-        #endregion SubFunction
-
-        private void btnConnect_Click(object sender, EventArgs e)
-        {
-            ComConnection(cbPort.SelectedItem.ToString());
-        }
-
+        /// <summary>
+        /// シリアル通信受信イベント
+        /// </summary>
         private void serialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
             byte[] b = new byte[serialPort1.BytesToRead];
@@ -209,8 +216,11 @@ namespace QRPS
             SrialPortDataReceived(str);
         }
 
+        /// <summary>
+        /// シリアル通信受信 -> form通信
+        /// </summary>
         delegate void SetTextCallback(string text);
-        private void SrialPortDataReceived (string text)
+        private void SrialPortDataReceived(string text)
         {
             if (textBox1.InvokeRequired)
             {
@@ -223,9 +233,22 @@ namespace QRPS
             }
         }
 
+        #endregion SubFunction
+
+        #region Debug用
+
+        private void btnConnect_Click(object sender, EventArgs e)
+        {
+            ComConnection(cbPort.SelectedItem.ToString());
+        }
+
+        
+
         private void btnDisConnect_Click(object sender, EventArgs e)
         {
             serialPort1.Close();
         }
+
+        #endregion Debug用
     }
 }
