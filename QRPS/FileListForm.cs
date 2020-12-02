@@ -108,6 +108,35 @@ namespace QRPS
             settings.Run();
         }
 
+        /// <summary>
+        /// シリアル通信受信イベント
+        /// </summary>
+        private void serialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            byte[] b = new byte[serialPort1.BytesToRead];
+            serialPort1.Read(b, 0, b.Length);
+            string str = System.Text.Encoding.ASCII.GetString(b);
+            SrialPortDataReceived(str);
+        }
+
+        // デリゲータ
+        delegate void SetTextCallback(string text);
+        /// <summary>
+        /// シリアル通信受信 -> form通信
+        /// </summary>
+        private void SrialPortDataReceived(string text)
+        {
+            if (textBox1.InvokeRequired)
+            {
+                SetTextCallback d = new SetTextCallback(SrialPortDataReceived);
+                BeginInvoke(d, new object[] { text });
+            }
+            else
+            {
+                textBox1.Text = text;
+            }
+        }
+
         #endregion EventFunction
 
         #region SubFunction
@@ -202,34 +231,6 @@ namespace QRPS
                                                     MessageBoxIcon.Exclamation);
                     this.Close();
                 }
-            }
-        }
-
-        /// <summary>
-        /// シリアル通信受信イベント
-        /// </summary>
-        private void serialPort1_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            byte[] b = new byte[serialPort1.BytesToRead];
-            serialPort1.Read(b, 0, b.Length);
-            string str = System.Text.Encoding.ASCII.GetString(b);
-            SrialPortDataReceived(str);
-        }
-
-        /// <summary>
-        /// シリアル通信受信 -> form通信
-        /// </summary>
-        delegate void SetTextCallback(string text);
-        private void SrialPortDataReceived(string text)
-        {
-            if (textBox1.InvokeRequired)
-            {
-                SetTextCallback d = new SetTextCallback(SrialPortDataReceived);
-                BeginInvoke(d, new object[] { text });
-            }
-            else
-            {
-                textBox1.Text = text;
             }
         }
 
