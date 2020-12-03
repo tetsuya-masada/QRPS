@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.IO.Ports;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace QRPS
@@ -87,25 +88,8 @@ namespace QRPS
         /// </summary>
         private void dgvFileNameList_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            // 実行中ファイルがある場合先に閉じる
-            if (ppt != null)
-            {
-                try{ppt.Close();}
-                catch (Exception ex){}
-                finally{ppt = null;}
-            }
-
-            // ppt Setting
-            var AppPpt = new Microsoft.Office.Interop.PowerPoint.Application();
-            // ppt Open
-            ppt = AppPpt.Presentations.Open(dgvFileNameList.Rows[e.RowIndex].Cells[1].Value.ToString(),
-                MsoTriState.msoTrue, MsoTriState.msoTrue, MsoTriState.msoTrue);
-
-            //SlideShow Setting
-            Microsoft.Office.Interop.PowerPoint.SlideShowSettings settings;
-            settings = ppt.SlideShowSettings;
-
-            settings.Run();
+            // pptを開いて、スライドショー実行
+            OpenPPT(e.RowIndex);
         }
 
         /// <summary>
@@ -133,13 +117,82 @@ namespace QRPS
             }
             else
             {
-                textBox1.Text = text;
+                try
+                {
+                    textBox1.Text = text;
+                    string partsNo = text.Substring(
+                        int.Parse(Config.GetIniFileString(Config.Section.System.ToString(), Config.SystemKey.startDigit.ToString())),
+                        int.Parse(Config.GetIniFileString(Config.Section.System.ToString(), Config.SystemKey.endDigit.ToString())) - int.Parse(Config.GetIniFileString(Config.Section.System.ToString(), Config.SystemKey.startDigit.ToString()))
+                        );
+                    // 検索対象は品番+拡張子
+                    textBox2.Text = partsNo + Config.GetIniFileString(Config.Section.System.ToString(), Config.SystemKey.targetFileExtend.ToString());
+                    DataGridViewRow dgvr = dgvFileNameList.Rows.Cast<DataGridViewRow>().FirstOrDefault(r => r.Cells["FileName"].Value.ToString() ==
+                      partsNo + Config.GetIniFileString(Config.Section.System.ToString(), Config.SystemKey.targetFileExtend.ToString()));
+
+                    // pptを開いて、スライドショー実行
+                    OpenPPT(dgvr.Index);
+                }
+                catch(Exception ex)
+                {
+                    _Log.WriteErrorLog(ex.Message);
+                    _Log.WriteErrorLog(ex.StackTrace);
+                    // システムエラー
+                    _Log.WriteErrorLog(string.Format(CommonLibrary.Utility.Message.GetMessage("E_9999")));
+                }
             }
         }
 
         #endregion EventFunction
 
         #region SubFunction
+
+        /// <summary>
+        /// 対象powerpointを開く
+        /// </summary>
+        private void OpenPPT(int rowIndex)
+        {
+            // 実行中ファイルがある場合先に閉じる
+            if (ppt != null)
+            {
+                try { ppt.Close(); }
+                catch (Exception ex) {
+                    _Log.WriteErrorLog(ex.Message);
+                    _Log.WriteErrorLog(ex.StackTrace);
+                }
+                finally { ppt = null; }
+            }
+
+            // ppt Setting
+            var AppPpt = new Microsoft.Office.Interop.PowerPoint.Application();
+            // ppt Open
+            try
+            {
+                ppt = AppPpt.Presentations.Open(dgvFileNameList.Rows[rowIndex].Cells[1].Value.ToString(),
+                    MsoTriState.msoTrue, MsoTriState.msoTrue, MsoTriState.msoTrue);
+                
+                //SlideShow Setting
+                Microsoft.Office.Interop.PowerPoint.SlideShowSettings settings;
+                settings = ppt.SlideShowSettings;
+
+                settings.Run();
+            }
+            catch(Exception ex)
+            {
+                _Log.WriteErrorLog(ex.Message);
+                _Log.WriteErrorLog(ex.StackTrace);
+                // 該当ファイルが存在しません\r\n({0})
+                _Log.WriteErrorLog(string.Format(CommonLibrary.Utility.Message.GetMessage("E_0005"), dgvFileNameList.Rows[rowIndex].Cells[1].Value.ToString()));
+                lblInfo.Text = string.Format(CommonLibrary.Utility.Message.GetMessage("E_0005"), dgvFileNameList.Rows[rowIndex].Cells[1].Value.ToString());
+                lblInfo.ForeColor = Color.Red;
+                lblInfo.Font = new Font(lblInfo.Font, FontStyle.Bold);
+                MessageBox.Show(string.Format(CommonLibrary.Utility.Message.GetMessage("E_0005"), dgvFileNameList.Rows[rowIndex].Cells[1].Value.ToString()),
+                                                    "Warning",
+                                                    MessageBoxButtons.OK,
+                                                    MessageBoxIcon.Exclamation);
+                this.Close();
+            }
+
+        }
 
         /// <summary>
         /// 対象ファイル抽出
@@ -163,6 +216,11 @@ namespace QRPS
                     lblInfo.Text = string.Format(CommonLibrary.Utility.Message.GetMessage("E_0001"), targetFldr);
                     lblInfo.ForeColor = Color.Red;
                     lblInfo.Font = new Font(lblInfo.Font, FontStyle.Bold);
+                    MessageBox.Show(string.Format(CommonLibrary.Utility.Message.GetMessage("E_0001"), targetFldr),
+                                                        "Warning",
+                                                        MessageBoxButtons.OK,
+                                                        MessageBoxIcon.Exclamation);
+                    this.Close();
                 }
                 else
                 {
@@ -176,11 +234,17 @@ namespace QRPS
             catch (Exception ex)
             {
                 _Log.WriteErrorLog(ex.Message);
+                _Log.WriteErrorLog(ex.StackTrace);
                 // 対象フォルダが存在しません。\r\n({0})
                 _Log.WriteErrorLog(string.Format(CommonLibrary.Utility.Message.GetMessage("E_0002"), targetFldr));
                 lblInfo.Text = string.Format(CommonLibrary.Utility.Message.GetMessage("E_0002"), targetFldr);
                 lblInfo.ForeColor = Color.Red;
                 lblInfo.Font = new Font(lblInfo.Font, FontStyle.Bold);
+                MessageBox.Show(string.Format(CommonLibrary.Utility.Message.GetMessage("E_0002"), targetFldr),
+                                                        "Warning",
+                                                        MessageBoxButtons.OK,
+                                                        MessageBoxIcon.Exclamation);
+                this.Close();
             }
         }
 
@@ -219,8 +283,10 @@ namespace QRPS
                     lblConInf.Text = string.Format(CommonLibrary.Utility.Message.GetMessage("I_0003"), comName);
                     lblConInf.ForeColor = Color.Black;
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
+                    _Log.WriteErrorLog(ex.Message);
+                    _Log.WriteErrorLog(ex.StackTrace);
                     // COMポート「" + comName + "」に接続できませんでした。
                     _Log.WriteErrorLog(string.Format(CommonLibrary.Utility.Message.GetMessage("E_0004"), comName));
                     lblConInf.Text = string.Format(CommonLibrary.Utility.Message.GetMessage("E_0004"), comName);

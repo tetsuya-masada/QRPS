@@ -43,7 +43,9 @@ namespace QRPS.CommonLibrary.Utility
         {
             PptxFldr,
             USBCOMName,
-            targetFileExtend
+            targetFileExtend,
+            startDigit,
+            endDigit
         }
 
         #endregion SystemKey
