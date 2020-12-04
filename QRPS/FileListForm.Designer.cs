@@ -220,6 +220,7 @@
             this.Controls.Add(this.lblInfo);
             this.Controls.Add(this.dgvFileNameList);
             this.Name = "FileListForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "ファイルリスト";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.formClosing_event);
             this.Load += new System.EventHandler(this.FileListForm_Load);
